@@ -37,7 +37,7 @@
               "entry": "src/server.ts"
             },
             "define": {
-              "process.env.API_HOST": ""
+              "process.env.API_HOST": "\"https://openlibrary.org\""
             }
           },
           "configurations": {

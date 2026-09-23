@@ -1,12 +1,12 @@
-<div class="app-layout">
+<div class="app-layout flex min-h-screen flex-col bg-[#424242] text-slate-800">
   <!-- Global Header -->
-  <app-header />
+  <app-header class="mx-auto block w-full max-w-md" />
 
   <!-- Main Content Wrapper: 100% on mobile, centered portrait constraint on desktop -->
-  <main>
+  <main class="mx-auto w-full max-w-md flex-1 bg-white">
     <router-outlet />
   </main>
 
   <!-- Global Footer -->
-  <app-footer />
+  <app-footer class="mx-auto block w-full max-w-md" />
 </div>
