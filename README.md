@@ -1,59 +1,57 @@
 # MyBookPaperid
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+MyBookPaperid is a take-home front-end engineering project for Paper.id, built with Angular.
 
-## Development server
+## Prerequisites
 
-To start a local development server, run:
+- Node.js `22.22.3` or later (or `24.15.0+`)
+- npm `10.9.2` or later
+- Angular CLI `22.1.8`
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+You can check your installed versions with:
 
 ```bash
-ng generate component component-name
+node --version
+npm --version
+npx ng version
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## How to Install
+
+Clone the repository, move into the project directory, and install its dependencies:
 
 ```bash
-ng generate --help
+git clone <repository-url>
+cd my-book-paperid
+npm install
 ```
 
-## Building
+## How to Run in Development
 
-To build the project run:
+Start the Angular development server:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Open [http://localhost:4200](http://localhost:4200) in your browser.
 
-## Running unit tests
+## How to Build and Run in Production
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Build the application using the production configuration:
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Start the generated server-side rendered application:
 
 ```bash
-ng e2e
+npm run serve:ssr:my-book-paperid
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The production server is available at [http://localhost:4000](http://localhost:4000).
 
-## Additional Resources
+## Contribution
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Yussan](https://yussan.framer.website)
