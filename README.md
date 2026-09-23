@@ -53,6 +53,12 @@ cd my-book-paperid
 npm install
 ```
 
+Create .env file
+```bash
+cp .env.example .env
+```
+Fill based on yout environtment setup.
+
 ## How to Run in Development
 
 Start the Angular development server:
@@ -62,6 +68,9 @@ npm start
 ```
 
 Open [http://localhost:4200](http://localhost:4200) in your browser.
+
+
+The API host is configured in `.env` as `API_HOST=https://openlibrary.org` and is centralized in `src/app/core/config/api.config.ts`.
 
 ## How to Build and Run in Production
 

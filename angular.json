@@ -35,6 +35,9 @@
             },
             "ssr": {
               "entry": "src/server.ts"
+            },
+            "define": {
+              "process.env.API_HOST": ""
             }
           },
           "configurations": {
