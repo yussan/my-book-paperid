@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.app-layout > app-header,
+.app-layout > app-footer {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  main,
+  .app-layout > app-header,
+  .app-layout > app-footer {
+    max-width: 28rem;
+  }
+}

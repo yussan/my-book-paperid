@@ -1,6 +1,6 @@
 # MyBookPaperid
 
-MyBookPaperid is a take-home front-end engineering project for Paper.id, built with Angular.
+MyBookPaperid is a take-home front-end engineering project for Paper.id, built with Angular. Live preview [https://my-book-paperid.vercel.app](https://my-book-paperid.vercel.app)
 
 ## Prerequisites
 
