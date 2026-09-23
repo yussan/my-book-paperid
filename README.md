@@ -16,6 +16,33 @@ npm --version
 npx ng version
 ```
 
+## Directory Structure
+
+```text
+my-book-paperid/
+├── public/                  # Static assets
+├── src/
+│   ├── app/
+│   │   ├── core/            # Core application services and logic
+│   │   ├── shared/          # Shared components and utilities
+│   │   ├── app.ts           # Root standalone component
+│   │   ├── app.html         # Root page template
+│   │   ├── app.css          # Root component styles
+│   │   ├── app.config.ts    # Client application configuration
+│   │   ├── app.config.server.ts
+│   │   ├── app.routes.ts    # Client routes
+│   │   ├── app.routes.server.ts
+│   │   └── app.spec.ts      # Root component tests
+│   ├── main.ts              # Browser bootstrap
+│   ├── main.server.ts       # Server-side bootstrap
+│   ├── server.ts            # SSR server entry point
+│   ├── index.html           # Main HTML document
+│   └── styles.css           # Global styles
+├── angular.json             # Angular CLI configuration
+├── package.json             # Scripts and dependencies
+└── tsconfig.json            # TypeScript configuration
+```
+
 ## How to Install
 
 Clone the repository, move into the project directory, and install its dependencies:
