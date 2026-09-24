@@ -99,7 +99,12 @@ const STATIC_PREVIEW_BOOKS: BookPreview[] = [
               class="w-full pl-12 pr-4 py-3.5 bg-white text-slate-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:text-teal-700 placeholder-slate-400 text-sm font-normal"
             />
 
-            @if (searchTerm().trim()) {
+            
+          </div>
+
+          <!-- Search result here -->
+           
+          @if (searchTerm().trim()) {
               <div class="mt-3 rounded-xl bg-white shadow-lg border border-slate-200 overflow-hidden">
                 @if (isLoading()) {
                   <div class="px-4 py-3 text-sm text-slate-600">Waiting for results...</div>
@@ -139,7 +144,7 @@ const STATIC_PREVIEW_BOOKS: BookPreview[] = [
                 }
               </div>
             }
-          </div>
+          <!-- End of search result -->
         </div>
       </div>
     </section>
@@ -149,6 +154,7 @@ export class HeaderComponent {
   isSearchOpen = signal<boolean>(false);
   searchTerm = signal<string>('');
   isLoading = signal<boolean>(false);
+  private searchTimer: number | null = null;
 
   searchQuery = output<string>();
 
@@ -174,14 +180,20 @@ export class HeaderComponent {
     this.searchTerm.set(value);
     this.searchQuery.emit(value);
 
-    if (value.trim()) {
-      this.isLoading.set(true);
-      window.setTimeout(() => {
-        this.isLoading.set(false);
-      }, 500);
-    } else {
-      this.isLoading.set(false);
+    if (this.searchTimer) {
+      window.clearTimeout(this.searchTimer);
     }
+
+    if (!value.trim()) {
+      this.isLoading.set(false);
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    this.searchTimer = window.setTimeout(() => {
+      this.isLoading.set(false);
+    }, 1000);
   }
 
   getCoverUrl(coverId: number): string {
