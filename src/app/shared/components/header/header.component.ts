@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, output, signal } from '@angular/core';
 import { BookSearchDocument, BookSearchResponse } from '../../../core/models/open-library.model';
-import { OpenLibraryService } from '../../../core/services/open-library.service';
+import { OpenLibraryService } from '../../../core/services/open-library/open-library.service';
 import { BookDetailService } from '../../../core/services/book-detail.service';
 import { SearchResultSkeletonComponent } from '../skeletons/search-result-skeleton.component';
 import { getCoverUrl as getOpenLibraryCoverUrl } from '../../utils/open-library/open-library.util';
@@ -173,7 +173,7 @@ export class HeaderComponent {
 
     this.isLoading.set(true);
 
-    // Make sure user stop typing and start to fetchData, waiting 500ms after stop typing
+    // Make sure user stop typing and start to fetchData, waiting 200ms after stop typing
     this.searchTimer = window.setTimeout(() => {
       const requestId = ++this.latestRequestId;
 
@@ -215,10 +215,10 @@ export class HeaderComponent {
             this.activeRequestController = null;
           },
         });
-    }, 300);
+    }, 200);
   }
 
-  getCoverUrl(book: BookSearchDocument): string | undefined {
+  getCoverUrl(book: BookSearchDocument): string {
     // Get image URL for small size for search result
     return getOpenLibraryCoverUrl(book, "S");
   }

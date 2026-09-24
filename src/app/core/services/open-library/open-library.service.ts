@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { API_HOST } from '../config/api.config';
-import { BookSearchOptions, BookSearchResponse } from '../models/open-library.model';
+import { API_HOST } from '../../config/api.config';
+import { BookSearchOptions, BookSearchResponse } from '../../models/open-library.model';
 
 const SEARCH_PATH = '/search.json';
 const DEFAULT_LIMIT = 10;

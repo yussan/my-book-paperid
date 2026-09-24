@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, inject, OnInit, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
 import { BookSearchDocument } from '../../core/models/open-library.model';
-import { OpenLibraryService } from '../../core/services/open-library.service';
+import { OpenLibraryService } from '../../core/services/open-library/open-library.service';
 import { BookCardComponent } from '../../shared/components/cards/book-card/book-card.component';
 import { BookCardSkeletonComponent } from '../../shared/components/skeletons/book-card-skeleton.component';
 import { getCoverUrl as getOpenLibraryCoverUrl, getRandomRating } from '../../shared/utils/open-library/open-library.util';
@@ -52,15 +52,10 @@ export class HomeComponent implements OnInit {
   // Used to check if the code is currently running on the server or in the browser
   private readonly platformId = inject(PLATFORM_ID);
 
+  isLoading:boolean = true
+
   books: BookSearchDocument[] = [];
-  private _isLoading = true;
-  get isLoading(): boolean {
-    return this._isLoading;
-  }
-  set isLoading(value: boolean) {
-    console.log('[HomeComponent] isLoading changed to:', value);
-    this._isLoading = value;
-  }
+ 
   errorMessage = '';
   readonly skeletonItems = Array.from({ length: 6 }, (_, index) => index);
 
@@ -104,7 +99,7 @@ export class HomeComponent implements OnInit {
    * @param book 
    * @returns 
    */
-  getCoverUrl(book: BookSearchDocument): string | undefined {
+  getCoverUrl(book: BookSearchDocument): string {
     return getOpenLibraryCoverUrl(book);
   }
 

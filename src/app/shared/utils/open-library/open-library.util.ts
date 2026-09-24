@@ -5,7 +5,7 @@ import { BookSearchDocument } from '../../../core/models/open-library.model';
  * @param book
  * @returns {String}
  */
-export function getCoverUrl(book: BookSearchDocument, size: 'S' | 'M' | 'L' = 'M'): string | undefined {
+export function getCoverUrl(book: BookSearchDocument, size: 'S' | 'M' | 'L' = 'M'): string {
   if (book.cover_i === undefined || book.cover_i === null) {
     return "";
   }
