@@ -16,6 +16,7 @@ npm --version
 npx ng version
 ```
 
+
 ## Directory Structure
 
 ```text
@@ -88,6 +89,11 @@ npm run serve:ssr:my-book-paperid
 
 The production server is available at [http://localhost:4000](http://localhost:4000).
 
-## Contribution
+## Contributors
 
 - [Yussan](https://yussan.framer.website)
+
+
+## Links
+- Angular coding style [https://angular.dev/style-guide](https://angular.dev/style-guide).
+- Open Library public API Docs [https://openlibrary.org/developers/api](https://openlibrary.org/developers/api)

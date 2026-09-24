@@ -1,42 +1,91 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { BookSearchDocument } from '../../core/models/open-library.model';
+import { TrendingBooksService } from '../../core/services/trending-books.service';
+import { BookCardComponent } from '../../shared/components/cards/book-card/book-card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
+  imports: [CommonModule, BookCardComponent],
   template: `
-    <!-- search section -->
-    <section class="bg-purplemain p-5">
-      <div class="relative w-full">
-        <!-- Search Icon -->
-        <span
-          class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 stroke-[2.2]"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+    <div class="p-6">
+      <h2 class="text-lg font-bold text-slate-800 mb-4">Trending Books</h2>
+      @if (isLoading) {
+        <!-- Waiting response from API -->
+        <div class="text-sm text-slate-500">Loading trending books...</div>
+      } @else if (errorMessage) {
+        <!-- Error response -->
+        <div class="text-sm text-red-600">{{ errorMessage }}</div>
+      } @else {
+        <!-- Success response, render the books -->
+        <div class="grid grid-cols-2 gap-4">
+          @for (book of books; track book.key) {
+            <app-book-card
+              [title]="book.title"
+              [author]="book.author_name?.join(', ') ?? 'Unknown Author'"
+              // TODO: next feature from Paper.id Book, user rating
+              [rating]="getRandomRating()"
+              [coverUrl]="getCoverUrl(book)"
+              [year]="book.first_publish_year"
+              badgeText="Trending"
             />
-          </svg>
-        </span>
-
-        <!-- Input Field -->
-        <input
-          type="text"
-          placeholder="Search"
-          /* (input)="onInput($event)" */
-          class="w-full pl-12 pr-4 py-3.5 bg-white text-slate-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 placeholder-slate-400 text-sm font-normal"
-        />
-      </div>
-    </section>
-    <!-- end of search section -->
+          }
+        </div>
+      }
+    </div>
   `,
 })
-export class HomeComponent {}
+export class HomeComponent implements OnInit {
+  private readonly trendingBooksService = inject(TrendingBooksService);
+
+  books: BookSearchDocument[] = [];
+  isLoading = true;
+  errorMessage = '';
+
+  ngOnInit(): void {
+    this.trendingBooksService.getTrendingBooks(6).subscribe({
+      next: (response) => {
+        this.books = response.docs.slice(0, 6);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Unable to load trending books right now.';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  /**
+   * Function to generate URL of book cover
+   * @param book
+   * @returns
+   */
+  getCoverUrl(book: BookSearchDocument): string | null {
+    if (book.cover_i === undefined || book.cover_i === null) {
+      return null;
+    }
+
+    return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+  }
+
+  /**
+   * Function to get Book Key
+   * @param _
+   * @param book
+   * @returns
+   */
+  trackByBookKey(_: number, book: BookSearchDocument): string {
+    return book.key;
+  }
+
+  /**
+   * TODO: This features will available in next version Paper.id Book,
+   * Function to generate random rating from 4-5,
+   * @returns {Number} float
+   */
+  getRandomRating(): number {
+    const randomInt = Math.floor(Math.random() * (50 - 40 + 1)) + 40; // Generates an integer between 40 and 50
+    return randomInt / 10; // Converts back to decimal: 4.0, 4.1, ..., 5.0
+  }
+}

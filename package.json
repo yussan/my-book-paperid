@@ -14,6 +14,9 @@
     "serve:ssr:my-book-paperid": "node dist/my-book-paperid/server/server.mjs"
   },
   "private": true,
+  "engines": {
+    "node": ">=22.22.3"
+  },
   "packageManager": "npm@10.9.8",
   "dependencies": {
     "@angular/common": "^22.1.0",

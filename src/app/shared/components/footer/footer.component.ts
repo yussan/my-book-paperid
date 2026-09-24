@@ -6,7 +6,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <footer>this is footer</footer>
+    <footer class="bg-white text-center p-5 text-gray-400 text-xs leading-tight">
+      <small class="block">Paper.Id Book</small> 
+      <small class="block">Copyright &copy; 2026 Paper.id</small>
+    </footer>
   `,
 })
 export class FooterComponent {}
