@@ -1,15 +1,15 @@
 <div class="app-layout flex min-h-screen flex-col bg-teal-950 text-gray-200">
   <!-- Global Header -->
-  <app-header class="mx-auto block w-full max-w-md" />
+  <app-header class="mx-auto block w-full max-w-[526px]" />
 
   <!-- Main Content Wrapper: 100% on mobile, centered portrait constraint on desktop -->
-  <main class="mx-auto w-full max-w-md flex-1 bg-white">
+  <main class="mx-auto w-full flex-1 bg-white max-w-[526px]">
     <router-outlet />
   </main>
 
   <!-- Global Footer -->
-  <app-footer class="mx-auto block w-full max-w-md" />
+  <app-footer class="mx-auto block w-full max-w-[526px]" />
 
   <!-- Book Detail Drawer -->
-   <app-book-detail-drawer />
+  <app-book-detail-drawer />
 </div>
