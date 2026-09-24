@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, output, signal } from '@angular/core';
 import { BookSearchDocument, BookSearchResponse } from '../../../core/models/open-library.model';
 import { OpenLibraryService } from '../../../core/services/open-library/open-library.service';
-import { BookDetailService } from '../../../core/services/book-detail.service';
+import { BookDetailService } from '../../../core/services/book-detail/book-detail.service';
 import { SearchResultSkeletonComponent } from '../skeletons/search-result-skeleton.component';
 import { getCoverUrl as getOpenLibraryCoverUrl } from '../../utils/open-library/open-library.util';
 
