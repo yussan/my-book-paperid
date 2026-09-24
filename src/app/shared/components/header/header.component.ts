@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, output, signal } from '@angular/core';
 import { BookSearchDocument, BookSearchResponse } from '../../../core/models/open-library.model';
 import { OpenLibraryService } from '../../../core/services/open-library.service';
+import { BookDetailService } from '../../../core/services/book-detail.service'
 import { SearchResultSkeletonComponent } from '../skeletons/search-result-skeleton.component';
 
 @Component({
@@ -83,6 +84,7 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
                   @for (book of searchResults().slice(0, 20); track book.key) {
                     <button
                       type="button"
+                      (click)="selectBook(book)"
                       class="flex w-full items-center gap-3 border-b border-slate-100 px-3 py-2.5 text-left transition-all duration-200 ease-out hover:bg-slate-50 hover:translate-x-0.5 last:border-b-0"
                     >
                       <div class="h-12 w-9 shrink-0 overflow-hidden rounded-md bg-slate-100">
@@ -121,6 +123,7 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
 })
 export class HeaderComponent {
   private readonly openLibraryService = inject(OpenLibraryService);
+  private bookService = inject(BookDetailService)
 
   isSearchOpen = signal<boolean>(false);
   searchTerm = signal<string>('');
@@ -200,5 +203,14 @@ export class HeaderComponent {
 
   getCoverUrl(coverId: number): string {
     return `https://covers.openlibrary.org/b/id/${coverId}-S.jpg`;
+  }
+
+  // Open detail book to start order
+  selectBook(book: any) {
+    console.log("Order book", book)
+    this.bookService.openDrawer({
+      ...book,
+      rating: 4.9 // Optional mock rating
+    });
   }
 }
