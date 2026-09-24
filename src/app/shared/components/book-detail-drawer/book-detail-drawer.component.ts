@@ -10,15 +10,13 @@ import { BookDetailService } from '../../../core/services/book-detail.service';
     @if (bookService.isOpen()) {
       <!-- Backdrop Overlay -->
       <div 
-        class="fixed inset-0 z-40 bg-black/50 transition-opacity backdrop-blur-xs"
+        class="drawer-backdrop fixed inset-0 z-40 bg-black/50 backdrop-blur-xs"
         (click)="bookService.closeDrawer()"
       ></div>
 
       <!-- Bottom Drawer Container -->
       <div 
-        class="fixed inset-x-0 bottom-0 z-50 max-h-[90vh] overflow-y-auto rounded-t-3xl bg-white shadow-2xl transition-transform duration-300 ease-out transform"
-        [class.translate-y-0]="bookService.isOpen()"
-        [class.translate-y-full]="!bookService.isOpen()"
+        class="drawer-panel fixed inset-x-0 bottom-0 z-50 max-h-[90vh] overflow-y-auto rounded-t-3xl bg-white shadow-2xl"
       >
         <!-- Drag Handle / Header bar -->
         <div class="sticky top-0 bg-white pt-3 pb-2 px-6 flex items-center justify-between border-b border-slate-100 z-10">
@@ -74,7 +72,8 @@ import { BookDetailService } from '../../../core/services/book-detail.service';
                       </svg>
                     }
                   </div>
-                  <span class="text-xs font-semibold text-slate-700">{{ book.rating || '4.8' }} (128 reviews)</span>
+                  <!-- TODO: Integrated rating and total reviews -->
+                  <span class="text-xs font-semibold text-slate-700">{{ book.rating || '0' }} (128 reviews)</span>
                 </div>
               </div>
             </div>
@@ -84,8 +83,8 @@ import { BookDetailService } from '../../../core/services/book-detail.service';
               <span class="font-semibold text-slate-700 block mb-1">About this book:</span>
               Explore the timeless insights and compelling narratives found within this edition. Fast shipping available through Paper.id Book store ecosystem.
             </div>
-
-            <!-- Big Order Button -->
+              
+            <!-- TODO: Big Order Button -->
             <button
               type="button"
               (click)="onOrderNow(book)"
@@ -99,6 +98,42 @@ import { BookDetailService } from '../../../core/services/book-detail.service';
           </div>
         }
       </div>
+    }
+  `,
+  styles: `
+    .drawer-backdrop {
+      animation: drawer-backdrop-enter 250ms ease-out both;
+    }
+
+    .drawer-panel {
+      animation: drawer-panel-enter 300ms ease-out both;
+    }
+
+    @keyframes drawer-backdrop-enter {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes drawer-panel-enter {
+      from {
+        opacity: 0;
+        transform: translateY(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .drawer-backdrop,
+      .drawer-panel {
+        animation: none;
+      }
     }
   `,
 })

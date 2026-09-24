@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, output, signal } from '@angular/core';
 import { BookSearchDocument, BookSearchResponse } from '../../../core/models/open-library.model';
 import { OpenLibraryService } from '../../../core/services/open-library.service';
-import { BookDetailService } from '../../../core/services/book-detail.service'
+import { BookDetailService } from '../../../core/services/book-detail.service';
 import { SearchResultSkeletonComponent } from '../skeletons/search-result-skeleton.component';
 
 @Component({
@@ -47,7 +47,9 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
       >
         <div class="p-5">
           <div class="relative w-full">
-            <span class="absolute top-1/2 left-0 -translate-y-1/2 flex items-center justify-center pl-4 pointer-events-none text-slate-400">
+            <span
+              class="absolute top-1/2 left-0 -translate-y-1/2 flex items-center justify-center pl-4 pointer-events-none text-slate-400"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5 stroke-[2.2]"
@@ -65,18 +67,19 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
             </span>
 
             <input
+              autofocus
               type="text"
               placeholder="Search"
               [value]="searchTerm()"
               (input)="onInput($event)"
               class="w-full pl-12 pr-4 py-3.5 bg-white text-slate-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:text-teal-700 placeholder-slate-400 text-sm font-normal"
             />
-
-            
           </div>
 
           @if (searchTerm().trim()) {
-            <div class="mt-3 rounded-xl bg-white shadow-lg border border-slate-200 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+            <div
+              class="mt-3 rounded-xl bg-white shadow-lg border border-slate-200 overflow-hidden animate-[fadeIn_0.2s_ease-out]"
+            >
               @if (isLoading()) {
                 <app-search-result-skeleton />
               } @else if (searchResults().length) {
@@ -95,12 +98,18 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
                             class="h-full w-full object-cover"
                           />
                         } @else {
-                          <div class="flex h-full w-full items-center justify-center text-[8px] text-slate-400">No cover</div>
+                          <div
+                            class="flex h-full w-full items-center justify-center text-[8px] text-slate-400"
+                          >
+                            No cover
+                          </div>
                         }
                       </div>
 
                       <div class="min-w-0 flex-1">
-                        <div class="truncate text-sm font-semibold text-slate-800">{{ book.title }}</div>
+                        <div class="truncate text-sm font-semibold text-slate-800">
+                          {{ book.title }}
+                        </div>
                         <div class="truncate text-xs text-slate-500">
                           {{ book.author_name?.join(', ') || 'Unknown author' }}
                         </div>
@@ -123,7 +132,7 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
 })
 export class HeaderComponent {
   private readonly openLibraryService = inject(OpenLibraryService);
-  private bookService = inject(BookDetailService)
+  private bookService = inject(BookDetailService);
 
   isSearchOpen = signal<boolean>(false);
   searchTerm = signal<string>('');
@@ -139,7 +148,6 @@ export class HeaderComponent {
     this.isSearchOpen.update((value) => !value);
   }
 
-  
   onInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchTerm.set(value);
@@ -162,43 +170,45 @@ export class HeaderComponent {
 
     this.isLoading.set(true);
 
-    // Make sure user stop typing and start to fetchData
+    // Make sure user stop typing and start to fetchData, waiting 500ms after stop typing
     this.searchTimer = window.setTimeout(() => {
       const requestId = ++this.latestRequestId;
 
       // Stop waiting request
       this.activeRequestController = new AbortController();
 
-      this.openLibraryService.searchBooks(value, {
-        limit: 20,
-        signal: this.activeRequestController.signal,
-      }).subscribe({
-        next: (response: BookSearchResponse) => {
-          if (requestId !== this.latestRequestId) {
-            return;
-          }
+      this.openLibraryService
+        .searchBooks(value, {
+          limit: 20,
+          signal: this.activeRequestController.signal,
+        })
+        .subscribe({
+          next: (response: BookSearchResponse) => {
+            if (requestId !== this.latestRequestId) {
+              return;
+            }
 
-          const docs = Array.isArray((response as Partial<BookSearchResponse>)?.docs)
-            ? (response as BookSearchResponse).docs
-            : [];
+            const docs = Array.isArray((response as Partial<BookSearchResponse>)?.docs)
+              ? (response as BookSearchResponse).docs
+              : [];
 
-          this.searchResults.set(docs.slice(0, 10));
-          this.isLoading.set(false);
-          this.searchTimer = null;
-          this.activeRequestController = null;
-        },
-        error: () => {
-          if (requestId !== this.latestRequestId) {
-            return;
-          }
+            this.searchResults.set(docs.slice(0, 10));
+            this.isLoading.set(false);
+            this.searchTimer = null;
+            this.activeRequestController = null;
+          },
+          error: () => {
+            if (requestId !== this.latestRequestId) {
+              return;
+            }
 
-          this.searchResults.set([]);
-          this.isLoading.set(false);
-          this.searchTimer = null;
-          this.activeRequestController = null;
-        },
-      });
-    }, 1000);
+            this.searchResults.set([]);
+            this.isLoading.set(false);
+            this.searchTimer = null;
+            this.activeRequestController = null;
+          },
+        });
+    }, 500);
   }
 
   getCoverUrl(coverId: number): string {
@@ -207,10 +217,9 @@ export class HeaderComponent {
 
   // Open detail book to start order
   selectBook(book: any) {
-    console.log("Order book", book)
     this.bookService.openDrawer({
       ...book,
-      rating: 4.9 // Optional mock rating
+      rating: 4.9, // TODO: integrate rating on next version. Optional mock rating
     });
   }
 }

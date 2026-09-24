@@ -21,27 +21,40 @@ npx ng version
 
 ```text
 my-book-paperid/
-├── public/                  # Static assets
+├── public/                  # Public static assets served as-is
+├── scripts/
+│   └── generate-config.mjs  # Generates runtime API configuration from environment variables
 ├── src/
-│   ├── app/
-│   │   ├── core/            # Core application services and logic
-│   │   ├── shared/          # Shared components and utilities
-│   │   ├── app.ts           # Root standalone component
-│   │   ├── app.html         # Root page template
-│   │   ├── app.css          # Root component styles
-│   │   ├── app.config.ts    # Client application configuration
-│   │   ├── app.config.server.ts
-│   │   ├── app.routes.ts    # Client routes
-│   │   ├── app.routes.server.ts
-│   │   └── app.spec.ts      # Root component tests
 │   ├── main.ts              # Browser bootstrap
-│   ├── main.server.ts       # Server-side bootstrap
-│   ├── server.ts            # SSR server entry point
-│   ├── index.html           # Main HTML document
-│   └── styles.css           # Global styles
-├── angular.json             # Angular CLI configuration
-├── package.json             # Scripts and dependencies
-└── tsconfig.json            # TypeScript configuration
+│   ├── main.server.ts       # Server-side rendering bootstrap
+│   ├── server.ts            # Node SSR server entry point
+│   ├── index.html            # Main HTML document
+│   ├── styles.css            # Global styles
+│   ├── app/
+│   │   ├── core/            # Reusable application logic and API access
+│   │   │   ├── config/      # API and environment configuration
+│   │   │   ├── models/      # Shared TypeScript data models
+│   │   │   └── services/    # Open Library and book-detail services
+│   │   ├── features/        # Route-level application features
+│   │   │   └── home/        # Trending books homepage
+│   │   ├── shared/          # Reusable UI components and utilities
+│   │   │   ├── components/
+│   │   │   │   ├── book-detail-drawer/ # Book detail and order drawer
+│   │   │   │   ├── cards/              # Reusable book cards
+│   │   │   │   ├── footer/             # Application footer
+│   │   │   │   ├── header/             # Navigation and book search
+│   │   │   │   └── skeletons/          # Loading placeholders
+│   │   │   └── utils/                  # Shared helper functions
+│   │   ├── app.ts             # Root standalone component
+│   │   ├── app.html           # Root page template
+│   │   ├── app.config.ts      # Client application configuration
+│   │   ├── app.config.server.ts # Server application configuration
+│   │   ├── app.routes.ts      # Client routes
+│   │   ├── app.routes.server.ts # Server routes
+│   │   └── app.spec.ts        # Root component tests
+├── angular.json               # Angular CLI configuration
+├── package.json               # Dependencies and npm scripts
+└── tsconfig.json              # TypeScript compiler configuration
 ```
 
 ## How to Install

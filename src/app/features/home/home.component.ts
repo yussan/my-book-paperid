@@ -4,6 +4,7 @@ import { BookSearchDocument } from '../../core/models/open-library.model';
 import { OpenLibraryService } from '../../core/services/open-library.service';
 import { BookCardComponent } from '../../shared/components/cards/book-card/book-card.component';
 import { BookCardSkeletonComponent } from '../../shared/components/skeletons/book-card-skeleton.component';
+import { getCoverUrl as getOpenLibraryCoverUrl, getRandomRating } from '../../shared/utils/open-library.util';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,7 @@ import { BookCardSkeletonComponent } from '../../shared/components/skeletons/boo
               [title]="book.title"
               [author]="book.author_name?.join(', ') ?? 'Unknown Author'"
               // TODO: next feature from Paper.id Book, user rating
-              [rating]="getRandomRating()"
+              [rating]="getRating()"
               [coverUrl]="getCoverUrl(book)"
               [year]="book.first_publish_year"
               badgeText="Trending"
@@ -52,27 +53,27 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.openLibraryService.getTrendingBooks(6).subscribe({
       next: (response) => {
-        this.books = response.docs.slice(0, 6);
+        const docs = Array.isArray((response as Partial<typeof response>)?.docs)
+          ? response.docs
+          : [];
+
+        this.books = docs.slice(0, 6);
+        this.errorMessage = '';
         this.isLoading = false;
       },
       error: () => {
+        this.books = [];
         this.errorMessage = 'Unable to load trending books right now.';
+        this.isLoading = false;
+      },
+      complete: () => {
         this.isLoading = false;
       },
     });
   }
 
-  /**
-   * Function to generate URL of book cover
-   * @param book
-   * @returns
-   */
   getCoverUrl(book: BookSearchDocument): string | null {
-    if (book.cover_i === undefined || book.cover_i === null) {
-      return null;
-    }
-
-    return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+    return getOpenLibraryCoverUrl(book);
   }
 
   /**
@@ -90,8 +91,7 @@ export class HomeComponent implements OnInit {
    * Function to generate random rating from 4-5,
    * @returns {Number} float
    */
-  getRandomRating(): number {
-    const randomInt = Math.floor(Math.random() * (50 - 40 + 1)) + 40; // Generates an integer between 40 and 50
-    return randomInt / 10; // Converts back to decimal: 4.0, 4.1, ..., 5.0
+  getRating(): number {
+    return getRandomRating()
   }
 }

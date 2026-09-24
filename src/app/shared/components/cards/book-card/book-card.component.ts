@@ -1,5 +1,6 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BookDetailService } from '../../../../core/services/book-detail.service';
 
 @Component({
   selector: 'app-book-card',
@@ -7,7 +8,8 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div
-      class="flex flex-col bg-white rounded-2xl p-3 shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer"
+      (click)="selectBook()"
+      class="flex flex-col bg-white cursor-pointer rounded-2xl p-3 shadow-sm border border-slate-100 hover:shadow-md transition-shadow"
     >
       <!-- Book Cover Container with Badge Overlay -->
       <div class="relative w-full aspect-3/4 bg-slate-100 rounded-xl overflow-hidden mb-3">
@@ -42,7 +44,13 @@ import { CommonModule } from '@angular/common';
       <div class="flex flex-col flex-1 justify-between">
         <div>
           <h3 class="font-semibold text-slate-800 text-sm line-clamp-1 mb-0.5">{{ title() }}</h3>
-          <p class="text-xs text-slate-400 line-clamp-1" [class.mb-0]="year()" [class.mb-2]="!year()">{{ author() }}</p>
+          <p
+            class="text-xs text-slate-400 line-clamp-1"
+            [class.mb-0]="year()"
+            [class.mb-2]="!year()"
+          >
+            {{ author() }}
+          </p>
           @if (year()) {
             <p class="text-xs text-slate-400 line-clamp-1 mb-2">First publish {{ year() }}</p>
           }
@@ -68,10 +76,22 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class BookCardComponent {
+  private bookService = inject(BookDetailService);
+
   title = input<string>('');
   author = input<string>('');
   year = input<number | undefined>(0);
   rating = input<number | string>('0');
   coverUrl = input<string | null>(null);
   badgeText = input<string | null>(null);
+
+  selectBook() {
+    this.bookService.openDrawer({
+      key: this.title(),
+      title: this.title(),
+      author_name: [this.author()],
+      first_publish_year: this.year(),
+      rating: Number(this.rating()),
+    });
+  }
 }

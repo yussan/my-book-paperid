@@ -1,3 +1,4 @@
+// TODO: create global drawer component for muilti use case
 import { Injectable, signal } from '@angular/core';
 
 export interface BookDetail {
@@ -17,6 +18,8 @@ export class BookDetailService {
   selectedBook = signal<BookDetail | null>(null);
 
   openDrawer(book: BookDetail) {
+    console.log('Open book:', book);
+
     this.selectedBook.set(book);
     this.isOpen.set(true);
   }
