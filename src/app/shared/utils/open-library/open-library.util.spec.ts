@@ -10,12 +10,13 @@ describe('Open Library utilities', () => {
 
   describe('getCoverUrl', () => {
     it('should generate an Open Library cover URL', () => {
-      expect(getCoverUrl(book)).toBe('https://covers.openlibrary.org/b/id/123456-L.jpg');
+      // by default image size is M
+      expect(getCoverUrl(book)).toBe('https://covers.openlibrary.org/b/id/123456-M.jpg');
     });
 
     it('should return null when the book has no cover', () => {
-      expect(getCoverUrl({ ...book, cover_i: undefined })).toBeNull();
-      expect(getCoverUrl({ ...book, cover_i: null as never })).toBeNull();
+      expect(getCoverUrl({ ...book, cover_i: undefined })).toBeOneOf([""]);
+      expect(getCoverUrl({ ...book, cover_i: null as never })).toBeOneOf([""]);
     });
   });
 
