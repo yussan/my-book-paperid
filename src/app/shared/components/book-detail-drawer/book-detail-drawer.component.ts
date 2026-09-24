@@ -39,9 +39,9 @@ import { BookDetailService } from '../../../core/services/book-detail.service';
             <div class="flex gap-4 items-start">
               <!-- Cover -->
               <div class="h-32 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-100 shadow-md border border-slate-200">
-                @if (book.cover_i) {
+                @if (book.cover_url) {
                   <img
-                    [src]="'https://covers.openlibrary.org/b/id/' + book.cover_i + '-M.jpg'"
+                    [src]="book.cover_url"
                     [alt]="book.title"
                     class="h-full w-full object-cover"
                   />

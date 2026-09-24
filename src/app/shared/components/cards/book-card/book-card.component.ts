@@ -82,7 +82,7 @@ export class BookCardComponent {
   author = input<string>('');
   year = input<number | undefined>(0);
   rating = input<number | string>('0');
-  coverUrl = input<string | null>(null);
+  coverUrl = input<string | undefined>('');
   badgeText = input<string | null>(null);
 
   selectBook() {
@@ -92,6 +92,7 @@ export class BookCardComponent {
       author_name: [this.author()],
       first_publish_year: this.year(),
       rating: Number(this.rating()),
+      cover_url: this.coverUrl()
     });
   }
 }

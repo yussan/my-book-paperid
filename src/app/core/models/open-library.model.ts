@@ -22,4 +22,6 @@ export interface BookSearchDocument {
   isbn?: string[];
   publish_year?: number[];
   subject?: string[];
+  cover_url?: string;
+  rating?: number;
 }

@@ -86,6 +86,11 @@ Open [http://localhost:4200](http://localhost:4200) in your browser.
 
 The API host is configured in `.env` as `API_HOST=https://openlibrary.org` and is centralized in `src/app/core/config/api.config.ts`.
 
+Unit Test, all code must passed test before commit/merge
+```bash
+npm run test
+```
+
 ## How to Build and Run in Production
 
 Build the application using the production configuration:

@@ -1,10 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
 import { BookSearchDocument } from '../../core/models/open-library.model';
 import { OpenLibraryService } from '../../core/services/open-library.service';
 import { BookCardComponent } from '../../shared/components/cards/book-card/book-card.component';
 import { BookCardSkeletonComponent } from '../../shared/components/skeletons/book-card-skeleton.component';
-import { getCoverUrl as getOpenLibraryCoverUrl, getRandomRating } from '../../shared/utils/open-library.util';
+import { getCoverUrl as getOpenLibraryCoverUrl, getRandomRating } from '../../shared/utils/open-library/open-library.util';
+
+// Solve hydration server and client
+const TRENDING_BOOKS_KEY = makeStateKey<BookSearchDocument[]>('trending-books');
 
 @Component({
   selector: 'app-home',
@@ -27,12 +30,12 @@ import { getCoverUrl as getOpenLibraryCoverUrl, getRandomRating } from '../../sh
         <!-- Success response, render the books -->
         <div class="grid grid-cols-2 gap-4">
           @for (book of books; track book.key) {
+            <!-- TODO: next feature from Paper.id Book, user rating -->
             <app-book-card
               [title]="book.title"
               [author]="book.author_name?.join(', ') ?? 'Unknown Author'"
-              // TODO: next feature from Paper.id Book, user rating
-              [rating]="getRating()"
-              [coverUrl]="getCoverUrl(book)"
+              [rating]="book.rating ?? 4.9"
+              [coverUrl]="book.cover_url"
               [year]="book.first_publish_year"
               badgeText="Trending"
             />
@@ -44,20 +47,44 @@ import { getCoverUrl as getOpenLibraryCoverUrl, getRandomRating } from '../../sh
 })
 export class HomeComponent implements OnInit {
   private readonly openLibraryService = inject(OpenLibraryService);
+  // Used to transfer fetched data from the server directly to the browser
+  private readonly transferState = inject(TransferState);
+  // Used to check if the code is currently running on the server or in the browser
+  private readonly platformId = inject(PLATFORM_ID);
 
   books: BookSearchDocument[] = [];
-  isLoading = true;
+  private _isLoading = true;
+  get isLoading(): boolean {
+    return this._isLoading;
+  }
+  set isLoading(value: boolean) {
+    console.log('[HomeComponent] isLoading changed to:', value);
+    this._isLoading = value;
+  }
   errorMessage = '';
   readonly skeletonItems = Array.from({ length: 6 }, (_, index) => index);
 
   ngOnInit(): void {
+    if (this.transferState.hasKey(TRENDING_BOOKS_KEY)) {
+      this.books = this.transferState.get(TRENDING_BOOKS_KEY, []);
+      this.isLoading = false;
+      
+      if (isPlatformBrowser(this.platformId)) {
+        return; // Use cached data on the browser
+      }
+    }
     this.openLibraryService.getTrendingBooks(6).subscribe({
       next: (response) => {
         const docs = Array.isArray((response as Partial<typeof response>)?.docs)
-          ? response.docs
+          ? response.docs.map(book => {
+              book.cover_url = this.getCoverUrl(book);
+              book.rating = this.getRating();
+              return book;
+            })
           : [];
 
         this.books = docs.slice(0, 6);
+        this.transferState.set(TRENDING_BOOKS_KEY, this.books);
         this.errorMessage = '';
         this.isLoading = false;
       },
@@ -72,18 +99,13 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getCoverUrl(book: BookSearchDocument): string | null {
-    return getOpenLibraryCoverUrl(book);
-  }
-
   /**
-   * Function to get Book Key
-   * @param _
-   * @param book
-   * @returns
+   * Function to get cover URL from Open Library
+   * @param book 
+   * @returns 
    */
-  trackByBookKey(_: number, book: BookSearchDocument): string {
-    return book.key;
+  getCoverUrl(book: BookSearchDocument): string | undefined {
+    return getOpenLibraryCoverUrl(book);
   }
 
   /**
@@ -92,6 +114,6 @@ export class HomeComponent implements OnInit {
    * @returns {Number} float
    */
   getRating(): number {
-    return getRandomRating()
+    return 4.9;
   }
 }

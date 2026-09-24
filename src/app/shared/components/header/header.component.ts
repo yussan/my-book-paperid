@@ -4,6 +4,7 @@ import { BookSearchDocument, BookSearchResponse } from '../../../core/models/ope
 import { OpenLibraryService } from '../../../core/services/open-library.service';
 import { BookDetailService } from '../../../core/services/book-detail.service';
 import { SearchResultSkeletonComponent } from '../skeletons/search-result-skeleton.component';
+import { getCoverUrl as getOpenLibraryCoverUrl } from '../../utils/open-library/open-library.util';
 
 @Component({
   selector: 'app-header',
@@ -85,6 +86,7 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
               } @else if (searchResults().length) {
                 <div class="max-h-72 overflow-y-auto overflow-x-hidden">
                   @for (book of searchResults().slice(0, 20); track book.key) {
+
                     <button
                       type="button"
                       (click)="selectBook(book)"
@@ -93,7 +95,7 @@ import { SearchResultSkeletonComponent } from '../skeletons/search-result-skelet
                       <div class="h-12 w-9 shrink-0 overflow-hidden rounded-md bg-slate-100">
                         @if (book.cover_i) {
                           <img
-                            [src]="getCoverUrl(book.cover_i)"
+                            [src]="book.cover_url"
                             [alt]="book.title"
                             class="h-full w-full object-cover"
                           />
@@ -138,6 +140,7 @@ export class HeaderComponent {
   searchTerm = signal<string>('');
   searchResults = signal<BookSearchDocument[]>([]);
   isLoading = signal<boolean>(false);
+
   private searchTimer: number | null = null;
   private latestRequestId = 0;
   private activeRequestController: AbortController | null = null;
@@ -188,8 +191,12 @@ export class HeaderComponent {
               return;
             }
 
+            // Normalize response
             const docs = Array.isArray((response as Partial<BookSearchResponse>)?.docs)
-              ? (response as BookSearchResponse).docs
+              ? (response as BookSearchResponse).docs.map(book => {
+                  book.cover_url = this.getCoverUrl(book);
+                  return book;
+                })
               : [];
 
             this.searchResults.set(docs.slice(0, 10));
@@ -208,15 +215,16 @@ export class HeaderComponent {
             this.activeRequestController = null;
           },
         });
-    }, 500);
+    }, 300);
   }
 
-  getCoverUrl(coverId: number): string {
-    return `https://covers.openlibrary.org/b/id/${coverId}-S.jpg`;
+  getCoverUrl(book: BookSearchDocument): string | undefined {
+    // Get image URL for small size for search result
+    return getOpenLibraryCoverUrl(book, "S");
   }
 
   // Open detail book to start order
-  selectBook(book: any) {
+  selectBook(book: BookSearchDocument) {
     this.bookService.openDrawer({
       ...book,
       rating: 4.9, // TODO: integrate rating on next version. Optional mock rating

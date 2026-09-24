@@ -1,16 +1,16 @@
-import { BookSearchDocument } from '../../core/models/open-library.model';
+import { BookSearchDocument } from '../../../core/models/open-library.model';
 
 /**
  * Function to generate book cover URL
  * @param book
  * @returns {String}
  */
-export function getCoverUrl(book: BookSearchDocument): string | null {
+export function getCoverUrl(book: BookSearchDocument, size: 'S' | 'M' | 'L' = 'M'): string | undefined {
   if (book.cover_i === undefined || book.cover_i === null) {
-    return null;
+    return "";
   }
 
-  return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+  return `https://covers.openlibrary.org/b/id/${book.cover_i}-${size}.jpg`;
 }
 
 /**
