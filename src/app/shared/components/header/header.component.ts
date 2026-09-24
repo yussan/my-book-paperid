@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, output, signal } from '@angular/core';
 import { BookSearchDocument, BookSearchResponse } from '../../../core/models/open-library.model';
 import { OpenLibraryService } from '../../../core/services/open-library.service';
+import { SearchResultSkeletonComponent } from '../skeletons/search-result-skeleton.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SearchResultSkeletonComponent],
   template: `
     <section>
       <header class="w-full bg-white text-gray-900 shadow-md pt-6">
@@ -76,7 +77,7 @@ import { OpenLibraryService } from '../../../core/services/open-library.service'
           @if (searchTerm().trim()) {
             <div class="mt-3 rounded-xl bg-white shadow-lg border border-slate-200 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
               @if (isLoading()) {
-                <div class="px-4 py-3 text-sm text-slate-600 animate-pulse">Waiting for results...</div>
+                <app-search-result-skeleton />
               } @else if (searchResults().length) {
                 <div class="max-h-72 overflow-y-auto overflow-x-hidden">
                   @for (book of searchResults().slice(0, 20); track book.key) {
