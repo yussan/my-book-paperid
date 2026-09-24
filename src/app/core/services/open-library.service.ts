@@ -20,6 +20,7 @@ export class OpenLibraryService {
 
     let params = new HttpParams()
       .set('q', trimmedQuery)
+      .set('fields', 'key,title, author_name,first_publish_year')
       .set('limit', options.limit ?? DEFAULT_LIMIT);
 
     if (options.page !== undefined) {
