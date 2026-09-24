@@ -11,6 +11,11 @@ const DEFAULT_LIMIT = 10;
 export class OpenLibraryService {
   private readonly http = inject(HttpClient);
 
+   /**
+   * Function to fetch search book
+   * @param limit 
+   * @returns 
+   */
   searchBooks(query: string, options: BookSearchOptions = {}): Observable<BookSearchResponse> {
     const trimmedQuery = query.trim();
 
@@ -20,12 +25,28 @@ export class OpenLibraryService {
 
     let params = new HttpParams()
       .set('q', trimmedQuery)
-      .set('fields', 'key,title, author_name,first_publish_year')
+      .set('fields', 'key,title,author_name,first_publish_year,cover_i')
       .set('limit', options.limit ?? DEFAULT_LIMIT);
 
     if (options.page !== undefined) {
       params = params.set('page', options.page);
     }
+
+    const requestOptions = options.signal ? { params, signal: options.signal } : { params };
+
+    return this.http.get<BookSearchResponse>(`${API_HOST}${SEARCH_PATH}`, requestOptions);
+  }
+
+  /**
+   * Function to fetch list trending books
+   * @param limit 
+   * @returns 
+   */
+  getTrendingBooks(limit = 6): Observable<BookSearchResponse> {
+    const params = new HttpParams()
+      .set('q', 'subject:trending')
+      .set('fields', 'key,title,author_name,first_publish_year,cover_i')
+      .set('limit', limit);
 
     return this.http.get<BookSearchResponse>(`${API_HOST}${SEARCH_PATH}`, { params });
   }

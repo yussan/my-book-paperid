@@ -1,19 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { BookSearchDocument } from '../../core/models/open-library.model';
-import { TrendingBooksService } from '../../core/services/trending-books.service';
+import { OpenLibraryService } from '../../core/services/open-library.service';
 import { BookCardComponent } from '../../shared/components/cards/book-card/book-card.component';
+import { BookCardSkeletonComponent } from '../../shared/components/skeletons/book-card-skeleton.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, BookCardComponent],
+  imports: [CommonModule, BookCardComponent, BookCardSkeletonComponent],
   template: `
     <div class="p-6">
       <h2 class="text-lg font-bold text-slate-800 mb-4">Trending Books</h2>
       @if (isLoading) {
         <!-- Waiting response from API -->
-        <div class="text-sm text-slate-500">Loading trending books...</div>
+        <div class="grid grid-cols-2 gap-4">
+          @for (item of skeletonItems; track item) {
+            <app-book-card-skeleton />
+          }
+        </div>
       } @else if (errorMessage) {
         <!-- Error response -->
         <div class="text-sm text-red-600">{{ errorMessage }}</div>
@@ -37,14 +42,15 @@ import { BookCardComponent } from '../../shared/components/cards/book-card/book-
   `,
 })
 export class HomeComponent implements OnInit {
-  private readonly trendingBooksService = inject(TrendingBooksService);
+  private readonly openLibraryService = inject(OpenLibraryService);
 
   books: BookSearchDocument[] = [];
   isLoading = true;
   errorMessage = '';
+  readonly skeletonItems = Array.from({ length: 6 }, (_, index) => index);
 
   ngOnInit(): void {
-    this.trendingBooksService.getTrendingBooks(6).subscribe({
+    this.openLibraryService.getTrendingBooks(6).subscribe({
       next: (response) => {
         this.books = response.docs.slice(0, 6);
         this.isLoading = false;

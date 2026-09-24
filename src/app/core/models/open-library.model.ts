@@ -1,6 +1,7 @@
 export interface BookSearchOptions {
   limit?: number;
   page?: number;
+  signal?: AbortSignal;
 }
 
 export interface BookSearchResponse {
